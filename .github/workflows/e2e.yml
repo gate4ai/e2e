@@ -1,0 +1,73 @@
+# Сквозные тесты gate4ai на исходниках всех ключевых репозиториев.
+# Ключевые репозитории вызывают этот workflow из своего ci.yml со своим sha:
+#
+#   e2e:
+#     uses: gate4ai/e2e/.github/workflows/e2e.yml@main
+#     with: { repo: "${{ github.repository }}", ref: "${{ github.sha }}" }
+#
+# Вызвавший репозиторий берётся на этом sha, остальные — на main.
+name: e2e
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      repo:
+        description: "репозиторий, который проверяется (owner/name)"
+        type: string
+        required: true
+      ref:
+        description: "его коммит"
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: gate4ai/e2e
+          ref: ${{ inputs.repo == 'gate4ai/e2e' && inputs.ref || (inputs.repo == '' && github.sha || 'main') }}
+          path: e2e
+      - uses: actions/checkout@v4
+        with:
+          repository: gate4ai/gate4ai
+          ref: ${{ inputs.repo == 'gate4ai/gate4ai' && inputs.ref || 'main' }}
+          path: gate4ai
+      - uses: actions/checkout@v4
+        with:
+          repository: gate4ai/sdk-go
+          ref: ${{ inputs.repo == 'gate4ai/sdk-go' && inputs.ref || 'main' }}
+          path: sdk-go
+      - uses: actions/checkout@v4
+        with:
+          repository: gate4ai/relay
+          ref: ${{ inputs.repo == 'gate4ai/relay' && inputs.ref || 'main' }}
+          path: relay
+      - uses: actions/checkout@v4
+        with:
+          repository: gate4ai/gate4ai-mail
+          ref: ${{ inputs.repo == 'gate4ai/gate4ai-mail' && inputs.ref || 'main' }}
+          path: connectors/mail
+      - uses: actions/checkout@v4
+        with:
+          repository: gate4ai/gate4ai-files
+          ref: ${{ inputs.repo == 'gate4ai/gate4ai-files' && inputs.ref || 'main' }}
+          path: connectors/files
+      - uses: actions/checkout@v4
+        with:
+          repository: gate4ai/gate4ai-browser
+          ref: ${{ inputs.repo == 'gate4ai/gate4ai-browser' && inputs.ref || 'main' }}
+          path: connectors/browser
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: gate4ai/go.mod
+      - run: go vet ./... && go test -count=1 ./...
+        working-directory: e2e

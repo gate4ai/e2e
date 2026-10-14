@@ -1,0 +1,13 @@
+// Соседние репозитории из общего каталога gate4ai/: e2e проверяет их исходники,
+// а не опубликованные версии модулей.
+go 1.27.1
+
+use (
+	.
+	../connectors/browser
+	../connectors/files
+	../connectors/mail
+	../gate4ai
+	../relay
+	../sdk-go
+)
