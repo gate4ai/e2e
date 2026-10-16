@@ -6,7 +6,7 @@
 |---|---|
 | `TestReadmeFlow` | поток из README: `send_email` → ask → подтверждение в Telegram → SMTP → проверка по «Отправленным» → квитанция; отказ по политике; экспорт журнала |
 | `TestQuickstartFlow` | конфигурация из `docs/quickstart.md` принимается с коннекторами mail, files, browser; `files.append` по правилу из неё, чтение вне корней запрещено |
-| `TestTBankConnector` | коннектор tbank в настоящем headless Chrome: `www.tbank-online.com` разрешается в фейковый сайт банка (`--host-resolver-rules`); перевод по СБП по телефону, по номеру карты, оплата по УИН и по реквизитам проходят и подтверждаются по ленте операций. Без Chrome пропускается |
+| `TestTBankConnector` | коннектор tbank в настоящем headless Chrome: `www.tbank-online.com` разрешается в фейковый сайт банка (`--host-resolver-rules`); перевод по СБП по телефону, по номеру карты, оплата по УИН и по реквизитам проходят и подтверждаются по ленте операций. Коннектор не в `go.work` (своего репозитория нет): собирается из `../connectors/tbank` против опубликованного sdk-go; без него или без Chrome тест пропускается |
 
 ## Запуск
 
@@ -15,7 +15,7 @@
 ```
 gate4ai/
   e2e/  gate4ai/  sdk-go/  relay/
-  connectors/mail/  connectors/files/  connectors/browser/  connectors/tbank/
+  connectors/mail/  connectors/files/  connectors/browser/  [connectors/tbank/]
 ```
 
 ```sh

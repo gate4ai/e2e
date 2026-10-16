@@ -109,8 +109,21 @@ func TestTBankConnector(t *testing.T) {
 	defer srv.Close()
 	port := srv.URL[strings.LastIndex(srv.URL, ":")+1:]
 
+	// Репозитория gate4ai-tbank нет: коннектор собирается, только если лежит
+	// рядом, и не через go.work, а против опубликованного sdk-go.
+	tbankDir, _ := filepath.Abs(filepath.Join("..", "connectors", "tbank"))
+	if _, err := os.Stat(filepath.Join(tbankDir, "go.mod")); err != nil {
+		t.Skip("../connectors/tbank not found")
+	}
 	g := startGate(t)
-	g.install("tbank")
+	pkg := filepath.Join(t.TempDir(), "tbank.g4c")
+	g.env = append(g.env, "GOWORK=off")
+	if r := g.run("", "", "connectors", "pack", tbankDir, "-o", pkg); r.code != 0 {
+		t.Fatal(r.out)
+	}
+	if r := g.run("", "y\n", "connectors", "install", pkg, "--dev"); r.code != 0 {
+		t.Fatalf("install tbank: %d %s", r.code, r.out)
+	}
 	dir := t.TempDir()
 	wrapper := filepath.Join(dir, "chrome")
 	os.WriteFile(wrapper, []byte("#!/bin/sh\nexec '"+chrome+"' --headless=new --disable-gpu --ignore-certificate-errors "+

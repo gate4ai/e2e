@@ -7,7 +7,6 @@ use (
 	../connectors/browser
 	../connectors/files
 	../connectors/mail
-	../connectors/tbank
 	../gate4ai
 	../relay
 	../sdk-go
