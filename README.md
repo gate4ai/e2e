@@ -1,11 +1,12 @@
 # gate4ai e2e
 
-Сквозные тесты [gate4ai](https://github.com/gate4ai/gate4ai): хост собирается из исходников, официальные коннекторы ставятся как свои сборки, `daemon` и CLI работают по-настоящему. Фейковые здесь только внешние серверы: IMAP/SMTP (`gate4ai-mail/mailtest`) и Telegram Bot API.
+Сквозные тесты [gate4ai](https://github.com/gate4ai/gate4ai): хост собирается из исходников, официальные коннекторы ставятся как свои сборки, `daemon` и CLI работают по-настоящему. Фейковые здесь только внешние серверы: IMAP/SMTP (`gate4ai-mail/mailtest`), Telegram Bot API и сайт ТБанка.
 
 | Тест | Что проверяет |
 |---|---|
 | `TestReadmeFlow` | поток из README: `send_email` → ask → подтверждение в Telegram → SMTP → проверка по «Отправленным» → квитанция; отказ по политике; экспорт журнала |
 | `TestQuickstartFlow` | конфигурация из `docs/quickstart.md` принимается с коннекторами mail, files, browser; `files.append` по правилу из неё, чтение вне корней запрещено |
+| `TestTBankConnector` | коннектор tbank в настоящем headless Chrome: `www.tbank-online.com` разрешается в фейковый сайт банка (`--host-resolver-rules`); перевод по СБП по телефону, по номеру карты, оплата по УИН и по реквизитам проходят и подтверждаются по ленте операций. Без Chrome пропускается |
 
 ## Запуск
 
@@ -14,7 +15,7 @@
 ```
 gate4ai/
   e2e/  gate4ai/  sdk-go/  relay/
-  connectors/mail/  connectors/files/  connectors/browser/
+  connectors/mail/  connectors/files/  connectors/browser/  connectors/tbank/
 ```
 
 ```sh
