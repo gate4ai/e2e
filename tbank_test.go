@@ -93,8 +93,9 @@ func (b *fakeTBank) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Коннектор tbank в настоящем daemon и настоящем Chrome (headless): www.tbank-online.com
-// разрешается в фейковый сайт банка. Три операции — перевод по СБП по телефону,
+// Коннектор tbank в настоящем daemon и настоящем Chrome (headless) через
+// нативный коннектор browser (service_call; browser в профиле агента не нужен):
+// www.tbank-online.com разрешается в фейковый сайт банка. Три операции — перевод по СБП по телефону,
 // перевод по номеру карты, оплата счёта по УИН и по реквизитам — проходят и
 // подтверждаются по ленте операций.
 func TestTBankConnector(t *testing.T) {
@@ -116,6 +117,7 @@ func TestTBankConnector(t *testing.T) {
 		t.Skip("../connectors/tbank not found")
 	}
 	g := startGate(t)
+	g.install("browser") // нативный пакет: tbank вызывает его действия через service_call
 	pkg := filepath.Join(t.TempDir(), "tbank.g4c")
 	g.env = append(g.env, "GOWORK=off")
 	if r := g.run("", "", "connectors", "pack", tbankDir, "-o", pkg); r.code != 0 {
@@ -137,10 +139,10 @@ profiles:
       - { id: tbank-test, action: "tbank.*", effect: allow }
 connectors:
   tbank: {}
-browser:
-  engine: cdp
-  chrome_path: %q
-  profile_dir: %q
+  browser:
+    engine: cdp
+    chrome_path: %q
+    profile_dir: %q
 `, wrapper, filepath.Join(dir, "profile"))
 	cfgFile := filepath.Join(dir, "config.yaml")
 	os.WriteFile(cfgFile, []byte(cfg), 0o600)

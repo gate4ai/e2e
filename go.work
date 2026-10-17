@@ -4,6 +4,7 @@ go 1.27.1
 
 use (
 	.
+	./testdata/pagereader
 	../connectors/browser
 	../connectors/mail
 	../gate4ai

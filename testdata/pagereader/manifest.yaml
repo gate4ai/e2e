@@ -1,0 +1,24 @@
+connector: pagereader
+description: e2e — reads a page title through the browser connector (service_call)
+version: "1"
+runtime: wasm
+capabilities:
+  services:
+    - target: browser
+      contract: 1
+      actions: [open, observe]
+      params: { domains: ["${setting:sites}"] }
+actions:
+  - name: title
+    class: read
+    input_schema:
+      type: object
+      properties:
+        url: { type: string, format: url }
+      required: [url]
+    output_schema:
+      type: object
+      properties:
+        title: { type: string }
+        text: { type: string }
+      required: [title]
