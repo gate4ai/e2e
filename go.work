@@ -5,7 +5,6 @@ go 1.27.1
 use (
 	.
 	../connectors/browser
-	../connectors/files
 	../connectors/mail
 	../gate4ai
 	../relay

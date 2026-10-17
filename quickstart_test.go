@@ -25,12 +25,12 @@ func quickstartYAML(t *testing.T) string {
 	return s[i+8 : i+8+j]
 }
 
-// Пример конфигурации из docs/quickstart.md принимается daemon с тремя
-// официальными коннекторами, и правило из него работает: files.append в
-// разрешённую папку проходит с проверкой, чтение вне корней запрещено.
+// Пример конфигурации из docs/quickstart.md принимается daemon с официальными
+// коннекторами (files встроен в ядро), и правило из него работает: files.append
+// в разрешённую папку проходит с проверкой, чтение вне корней запрещено.
 func TestQuickstartFlow(t *testing.T) {
 	g := startGate(t)
-	for _, c := range []string{"mail", "files", "browser"} {
+	for _, c := range []string{"mail", "browser"} {
 		g.install(c)
 	}
 	cfgFile := filepath.Join(t.TempDir(), "quickstart.yaml")

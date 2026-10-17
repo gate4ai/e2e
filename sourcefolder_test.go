@@ -17,8 +17,8 @@ import (
 // сам), update пересобирает из той же папки, --watch — на каждое изменение.
 func TestConnectorFromSourceFolder(t *testing.T) {
 	g := startGate(t)
-	src := filepath.Join(t.TempDir(), "files-src")
-	if err := os.CopyFS(src, os.DirFS(filepath.Join(src0(t), "connectors", "files"))); err != nil {
+	src := filepath.Join(t.TempDir(), "mail-src")
+	if err := os.CopyFS(src, os.DirFS(filepath.Join(src0(t), "connectors", "mail"))); err != nil {
 		t.Fatal(err)
 	}
 	os.RemoveAll(filepath.Join(src, ".git"))
@@ -39,7 +39,7 @@ func TestConnectorFromSourceFolder(t *testing.T) {
 	version := func() string {
 		r := g.run("", "", "connectors", "list", "--json")
 		for _, c := range r.json(t)["connectors"].([]any) {
-			if c := c.(map[string]any); c["connector"] == "files" {
+			if c := c.(map[string]any); c["connector"] == "email" {
 				return c["version"].(string)
 			}
 		}
@@ -55,11 +55,11 @@ func TestConnectorFromSourceFolder(t *testing.T) {
 	}
 
 	setVersion("dev1")
-	if r := g.run("", "", "connectors", "update", "files"); r.code != 0 || version() != "dev1" {
+	if r := g.run("", "", "connectors", "update", "email"); r.code != 0 || version() != "dev1" {
 		t.Fatalf("update from folder: %d %s (version %q)", r.code, r.out, version())
 	}
 
-	w := exec.Command(g.bin, "connectors", "update", "files", "--watch", "--yes")
+	w := exec.Command(g.bin, "connectors", "update", "email", "--watch", "--yes")
 	w.Env = g.env
 	wout := &lockedBuf{}
 	w.Stdout, w.Stderr = wout, wout

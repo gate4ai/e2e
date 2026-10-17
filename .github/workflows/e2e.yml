@@ -58,11 +58,6 @@ jobs:
           path: connectors/mail
       - uses: actions/checkout@v4
         with:
-          repository: gate4ai/gate4ai-files
-          ref: ${{ inputs.repo == 'gate4ai/gate4ai-files' && inputs.ref || 'main' }}
-          path: connectors/files
-      - uses: actions/checkout@v4
-        with:
           repository: gate4ai/gate4ai-browser
           ref: ${{ inputs.repo == 'gate4ai/gate4ai-browser' && inputs.ref || 'main' }}
           path: connectors/browser
