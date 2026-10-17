@@ -31,4 +31,4 @@ go test ./...          # около минуты; -short пропускает в
 
 ## Лицензия
 
-[AGPL-3.0-only](LICENSE): тесты импортируют `gate4ai-mail/mailtest`. Вклад — по DCO (`git commit -s`).
+[AGPL-3.0-only](LICENSE): тесты импортируют `gate4ai-mail/mailtest`. Вклад — по CLA (подписывается в первом pull request).
